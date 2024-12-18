@@ -1,86 +1,113 @@
-# ft_itoa
+## **ft_itoa**
 
-## Description
+**Assignment name**: ft_itoa  
+**Expected files**: `ft_itoa.c`  
+**Allowed functions**: `malloc`  
 
-The `ft_itoa` function takes an integer as an argument and converts it into a null-terminated string (character array). The function returns the resulting string, which is dynamically allocated using `malloc`. The string represents the integer in base 10, including support for negative numbers.
+---
 
-### Function Prototype:
+### **Description**
+
+In this task, you are asked to write a function that converts an integer to a null-terminated string. The function should return the resulting string in a dynamically allocated `char` array.
+
+### **Expected Output Format**
+
+The function should return the string representation of the integer in a null-terminated character array.
+
+For example:
+- `ft_itoa(123)` should return the string `"123"`.
+- `ft_itoa(-42)` should return the string `"-42"`.
+- `ft_itoa(0)` should return the string `"0"`.
+
+---
+
+### **Function Prototypes**
+
 ```c
 char *ft_itoa(int nbr);
 ```
 
-## Detailed Explanation
+---
 
-### Helper Functions
+### **Program Behavior**
 
-1. **`ft_len(int nbr)`**:
-   - This helper function calculates the number of digits required to represent the integer `nbr` in base 10.
-   - If `nbr` is `0`, it returns `1` since a single `0` digit is required.
-   - The function loops, dividing the number by 10 until it becomes 0, incrementing a counter each time to count the number of digits.
+1. **Integer to String Conversion**:  
+   The function should convert an integer to its corresponding string representation, considering the possible negative sign if the number is negative.
    
-   **Example:**
-   - For `1234`, `ft_len` will return `4`.
+2. **Dynamic Memory Allocation**:  
+   The resulting string should be stored in dynamically allocated memory. Make sure to allocate enough space for the integer string representation and the null terminator.
 
-2. **`ft_abs(int nbr)`**:
-   - This helper function returns the absolute value of an integer `nbr`.
-   - If the number is negative, it returns the positive equivalent. If the number is already positive or zero, it simply returns the number.
+3. **Edge Cases**:  
+   Handle the special case where the number is `0` (which should return `"0"`), and manage negative integers correctly.
 
-   **Example:**
-   - For `-5`, `ft_abs` will return `5`.
-   - For `5`, it returns `5`.
+---
 
-### `ft_itoa(int nbr)` Function
+### **Pseudo Code**
 
-1. **Calculate the number of digits**:
-   - The function first calculates the number of digits required to represent the absolute value of the input integer `nbr` using the helper function `ft_len`.
-   - If `nbr` is negative, it will adjust the length of the resulting string to account for the negative sign.
+```plaintext
+FUNCTION ft_len(nbr):
+    SET i = 0
+    IF nbr is 0:
+        RETURN 1
+    WHILE nbr is not 0:
+        nbr = nbr / 10
+        Increment i by 1
+    RETURN i
 
-2. **Memory Allocation**:
-   - The function allocates memory for the resulting string using `malloc`. The size is `(len + 1)` where `len` is the length of the string (number of digits) and `+1` is for the null terminator `\0`.
-   - If the memory allocation fails, it returns `NULL`.
+FUNCTION ft_abs(nbr):
+    IF nbr < 0:
+        RETURN -nbr
+    ELSE:
+        RETURN nbr
 
-3. **Build the String**:
-   - The function starts populating the string from the last digit to the first:
-     - It assigns the last character of the string to the character representation of the last digit of `nbr`.
-     - It continues by dividing `nbr` by 10 and moving to the next digit until all digits are processed.
-   - If the number was negative, it sets the first character to `'-'`.
+FUNCTION ft_itoa(nbr):
+    SET i = 0
+    SET len = ft_len(nbr)
+    IF nbr is negative:
+        Increment i by 1
+    SET len = len + i
+    ALLOCATE memory for c_num of size len + 1
+    IF memory allocation fails:
+        RETURN NULL
+    IF nbr is negative:
+        SET c_num[0] = '-'
+    SET c_num[len] = '\0'
+    WHILE (len - 1) >= i:
+        SET c_num[len - 1] = ft_abs(nbr % 10) + '0'
+        nbr = nbr / 10
+        Decrement len
+    RETURN c_num
+```
 
-4. **Null Terminator**:
-   - The function ensures that the string is properly null-terminated by placing a `'\0'` at the end of the string.
+---
 
-### Example Usage
+### **Code Explanation**
+
+- **`ft_len` Function**: This function calculates the number of digits in the integer. It works by repeatedly dividing the number by 10 until it reaches 0.
+  
+- **`ft_abs` Function**: This function returns the absolute value of an integer. It handles negative integers by returning their positive counterpart.
+
+- **`ft_itoa` Function**: This is the main function. It:
+  - Calculates the length of the integer string representation.
+  - Allocates enough memory to hold the resulting string.
+  - Handles negative integers by adding a minus sign at the beginning.
+  - Converts each digit of the integer to a character and fills the string from right to left.
+  - Adds a null terminator at the end.
+
+---
+
+### **Examples**
 
 ```c
-#include <stdio.h>
-#include <stdlib.h>
+// Example 1:
+char *result = ft_itoa(123);
+// Output: "123"
 
-int main() {
-    int number = -12345;
-    char *str = ft_itoa(number);
-    printf("The string is: %s\n", str);
-    free(str);  // Don't forget to free the allocated memory
-    return 0;
-}
+// Example 2:
+char *result = ft_itoa(-42);
+// Output: "-42"
+
+// Example 3:
+char *result = ft_itoa(0);
+// Output: "0"
 ```
-
-**Output:**
-```
-The string is: -12345
-```
-
-### Edge Cases
-
-1. **Zero (`0`)**:
-   - If the input integer is `0`, the function will return the string `"0"`.
-
-2. **Negative Numbers**:
-   - Negative numbers are handled by prepending the `'-'` sign to the result string.
-   - For example, `-123` will return `"-123"`.
-
-3. **Memory Allocation Failure**:
-   - If the `malloc` function fails to allocate memory for the result string, the function will return `NULL`.
-
-### Complexity
-
-- **Time Complexity**: O(n), where `n` is the number of digits in the integer. This is because the function processes each digit of the number once.
-- **Space Complexity**: O(n), where `n` is the number of digits in the integer. This is because a new string of length `n + 1` (for the null terminator) is created.

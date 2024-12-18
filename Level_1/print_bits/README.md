@@ -2,185 +2,72 @@
 
 ## Description
 
-The goal of this exercise is to write a function that takes a single byte (8 bits) as input and prints its binary representation **without a newline**.
+Assignment name  : print_bits  
+Expected files   : print_bits.c  
+Allowed functions: write  
 
----
+---------------------------------------------------------------
 
-## Function Prototype
+Write a function that takes a byte (an unsigned char) and prints its binary representation without a newline at the end.
+
+### Function Prototype:
 
 ```c
 void print_bits(unsigned char octet);
 ```
 
----
+### Parameters:
+- **octet**: An unsigned char (a byte) that you want to print in binary.
 
-## Program Rules
+### Requirements:
+- The function should print the binary representation of the given byte (`octet`).
+- No newline should be printed at the end.
+- Each byte should be printed as a sequence of 8 bits, with leading zeros if necessary.
 
-1. The input is a single byte represented as an `unsigned char`.
-2. Print the **binary representation** of the byte from **most significant bit** to **least significant bit**.
-3. **No newline (`\n`)** is printed at the end.
-4. Use only the `write` function for output.
+### Example:
 
----
-
-## Code Implementation
-
-Here is the implementation:
-
-```c
-#include <unistd.h>
-
-void print_bits(unsigned char octet)
-{
-    int i;                 // To iterate through each bit
-    unsigned char bit;
-
-    i = 8;                 // Total bits in a byte
-    while (i--)
-    {
-        bit = (octet >> i & 1) + '0'; // Extract the i-th bit and convert it to '0' or '1'
-        write(1, &bit, 1);
-    }
-}
-```
-
----
-
-## Explanation of the Code
-
-### Key Concepts
-
-1. **Bit Shifting**:
-   - To isolate each bit in the byte, we shift the bits of `octet` to the right using `>>` and check the least significant bit.
-
-   Example:
-   ```
-   00000010 (2 in binary)
-   octet >> 7 → 00000000 (check most significant bit)
-   octet >> 6 → 00000000
-   ...
-   octet >> 1 → 00000001
-   octet >> 0 → 00000010 & 1 → 1
-   ```
-
-2. **AND Operation (`&`)**:
-   - The `& 1` operation ensures we check only the least significant bit after shifting.
-
-3. **Output Using `write`**:
-   - Each bit is printed as either `'0'` or `'1'`.
-
-4. **No Newline**:
-   - The function does not append a newline, as per the assignment requirements.
-
----
-
-## Breakdown of Steps
-
-1. **Initialize `i` to 8**:
-   - There are 8 bits in a byte.
-
-2. **Iterate Through Each Bit**:
-   - Use a `while` loop to process the bits one at a time.
-
-3. **Extract the Bit**:
-   - Use `octet >> i` to shift bits to the right.
-   - Apply `& 1` to isolate the current bit.
-
-4. **Convert to Character**:
-   - Add `'0'` to convert the bit (0 or 1) into its ASCII character equivalent.
-
-5. **Print the Bit**:
-   - Use `write(1, &bit, 1)` to output each bit.
-
----
-
-## Example Usage
-
-### Example 1: Passing `2`
-
-**Input:**
-```c
-print_bits(2);
-```
-
-**Output:**
+For the input `2` (which is `00000010` in binary), the output should be:
 ```
 00000010
 ```
 
 ---
 
-### Example 2: Passing `255`
+## Function Behavior
 
-**Input:**
-```c
-print_bits(255);
-```
+1. **Input**:
+   - `octet`: A single byte (`unsigned char`), which is an 8-bit value. It can range from `0` to `255`.
 
-**Output:**
+2. **Output**:
+   - The function should output the binary representation of the `octet` parameter.
+
+3. **Edge Cases**:
+   - Ensure that the binary output includes all 8 bits, even if the value is smaller than 128 (e.g., `1` should be printed as `00000001`).
+
+---
+
+## Pseudo Code
+
 ```
-11111111
+START
+    Initialize a loop from 7 to 0 (8 bits)
+    For each bit, shift the byte (octet) right by the current index
+    AND it with 1 to get the current bit value (0 or 1)
+    Convert the bit value to '0' or '1' character
+    Print the character using write
+END
 ```
 
 ---
 
-### Example 3: Passing `0`
+## Code Explanation
 
-**Input:**
-```c
-print_bits(0);
-```
+1. **Bitwise operations**:
+   - The function uses a loop that iterates through the 8 bits of the `octet` byte. It checks each bit by shifting the byte right and performing a bitwise AND operation with `1` (`octet >> i & 1`).
+   - This operation extracts the bit at position `i` and converts it to either `0` or `1` by adding `'0'` to the result.
 
-**Output:**
-```
-00000000
-```
+2. **Writing the output**:
+   - Each bit is written to the output using the `write` function, ensuring no newline is appended.
 
----
-
-## Edge Cases
-
-1. **Input `0`**:
-   - All bits are `0`.
-
-2. **Input `255`**:
-   - All bits are `1`.
-
-3. **Random Values**:
-   - The function handles all possible values from `0` to `255` (range of `unsigned char`).
-
----
-
-## Compilation and Execution
-
-To compile the code:
-
-```bash
-cc -Wall -Wextra -Werror print_bits.c
-```
-
-To test the function:
-
-```c
-#include <unistd.h>
-
-void print_bits(unsigned char octet);
-
-int main(void)
-{
-    print_bits(2);  // Test with the number 2
-    write(1, "\n", 1);
-    print_bits(255); // Test with the number 255
-    write(1, "\n", 1);
-    print_bits(0);  // Test with the number 0
-    write(1, "\n", 1);
-    return (0);
-}
-```
-
-**Output:**
-```
-00000010
-11111111
-00000000
-```
+3. **Efficiency**:
+   - This approach ensures that we print all 8 bits, including leading zeros, without using extra functions like `printf`.

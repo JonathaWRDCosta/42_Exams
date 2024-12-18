@@ -1,208 +1,132 @@
-# Exercise: ft_split
+## **ft_split**
 
-## Description
-
-The goal is to create a function named `ft_split` that takes a string, splits it into **words**, and returns them as a NULL-terminated array of strings.
-
-### Word Definition:
-- A **word** is a sequence of characters **delimited** by:
-  - Spaces (`' '`),
-  - Tabs (`'\t'`), or
-  - Newlines (`'\n'`).
-- The start and end of the string also act as boundaries for words.
+**Assignment name**: ft_split  
+**Expected files**: `ft_split.c`  
+**Allowed functions**: `malloc`  
 
 ---
 
-## Function Prototype
+### **Description**
+
+The `ft_split` function takes a string and splits it into words, returning them as a NULL-terminated array of strings. A "word" is defined as a part of the string delimited by spaces, tabs, new lines, or the start/end of the string.
+
+---
+
+### **Expected Output Format**
+
+- This function returns a `char **`, which is a NULL-terminated array of strings. Each string in the array represents a "word" from the input string.
+
+---
+
+### **Function Prototypes**
 
 ```c
-char    **ft_split(char *str);
+char **ft_split(char *str);
 ```
 
-### Input:
-- A single string `str`.
+---
 
-### Output:
-- A dynamically allocated NULL-terminated array of strings, where each string corresponds to a word.
+### **Program Behavior**
 
-### Allowed Functions:
-- `malloc`
+1. **Input Parsing**:  
+   The function first processes the input string by skipping over spaces, tabs, and new lines to identify the boundaries of each word.
+
+2. **Counting Words**:  
+   The number of words is counted by iterating through the string and detecting sequences of non-delimited characters.
+
+3. **Memory Allocation**:  
+   After counting the words, memory is allocated for the array that will hold the individual words. Each word is then copied into the allocated space using `malloc`.
+
+4. **Splitting Words**:  
+   The function then iterates through the string again, extracting each word and storing it in the array. Each word is copied using the helper function `ft_strncpy`, which ensures proper null-termination.
+
+5. **NULL-Termination**:  
+   The array of words is null-terminated to signal the end of the array.
 
 ---
 
-## Code Implementation
+### **Pseudo Code**
 
-Here’s the implementation:
+```plaintext
+FUNCTION ft_split(str):
+    Initialize variables for indexing (i, j, k) and word count (wc)
+    
+    WHILE str[i] is not NULL:
+        SKIP spaces, tabs, and new lines
+        
+        IF a word is found:
+            INCREMENT word count (wc)
+        
+        SKIP the characters that form the word
+    
+    Allocate memory for the array of words (out)
+
+    Reset i to 0
+
+    WHILE str[i] is not NULL:
+        SKIP spaces, tabs, and new lines
+        
+        Store the start index (j)
+        
+        SKIP the characters that form the word
+        
+        IF a word is found:
+            Allocate memory for the word in out[k]
+            Copy the word into out[k]
+            Increment k
+    
+    NULL terminate the array of words (out[k] = NULL)
+    
+    RETURN out
+```
+
+---
+
+### **Code Explanation**
+
+- **Helper Function (`ft_strncpy`)**:  
+   The `ft_strncpy` function is used to copy a portion of the input string (from the start of a word to the end) into a new string. This function ensures that the copied string is null-terminated.
+
+- **Main Function (`ft_split`)**:  
+   The main function counts the number of words in the string by skipping delimiters (spaces, tabs, and new lines). It then allocates memory for the resulting array of strings and copies each word into the array.
+
+   - The first loop counts how many words are in the string.
+   - The second loop extracts each word and stores it in the array.
+   - Each word is dynamically allocated space using `malloc`.
+
+- **Memory Management**:  
+   Memory for each word is allocated separately, and the array of words is null-terminated. If memory allocation fails, the function returns `NULL`.
+
+---
+
+### **Example**
 
 ```c
-#include <stdlib.h>
 #include <stdio.h>
 
-char *ft_strncpy(char *s1, char *s2, int n)
-{
-	int i = -1;
-
-	while (++i < n && s2[i])
-		s1[i] = s2[i];
-	s1[i] = '\0';
-	return (s1);
-}
-
-char	**ft_split(char *str)
-{
-	int i = 0;
-	int j = 0;
-	int k = 0;
-	int wc = 0;
-	
-	// Word count
-	while (str[i])
-	{
-		while (str[i] && (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'))
-			i++;
-		if (str[i])
-			wc++;
-		while (str[i] && (str[i] != ' ' && str[i] != '\t' && str[i] != '\n'))
-			i++;
-	}
-	
-	// Allocate memory for the word array
-	char **out = (char **)malloc(sizeof(char *) * (wc + 1));
-	i = 0;
-	
-	// Word extraction
-	while (str[i])
-	{
-		while (str[i] && (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'))
-			i++;
-		j = i;
-		while (str[i] && (str[i] != ' ' && str[i] != '\t' && str[i] != '\n'))
-			i++;
-		if (i > j)
-		{
-			out[k] = (char *)malloc(sizeof(char) * ((i - j) + 1));
-			ft_strncpy(out[k++], &str[j], i - j);
-		}
-	}
-	out[k] = NULL;
-	return (out);
+int main(void) {
+    char *str = "Hello world 42 School";
+    char **result = ft_split(str);
+    
+    for (int i = 0; result[i] != NULL; i++) {
+        printf("Word %d: %s\n", i + 1, result[i]);
+    }
+    
+    // Free the allocated memory
+    for (int i = 0; result[i] != NULL; i++) {
+        free(result[i]);
+    }
+    free(result);
+    
+    return 0;
 }
 ```
 
----
+### **Expected Output**
 
-## Explanation of the Code
-
-### Key Steps:
-
-1. **Word Count**:
-   - Iterate through the input string `str` to count the total number of words (`wc`).
-   - Skip delimiters (spaces, tabs, or newlines).
-   - Increment the word count when a new word starts.
-
-2. **Memory Allocation**:
-   - Allocate memory for an array of strings (`char **out`) to hold all the words plus one `NULL` at the end.
-
-3. **Word Extraction**:
-   - For each word:
-     - Skip leading delimiters.
-     - Identify the start (`j`) and end (`i`) of the word.
-     - Allocate memory for the word and copy it into the array using the helper function `ft_strncpy`.
-
-4. **Termination**:
-   - Add a `NULL` pointer at the end of the array to mark its termination.
-
----
-
-## Key Concepts
-
-1. **Dynamic Memory Allocation**:
-   - Memory is allocated dynamically for both the array of words and individual words using `malloc`.
-
-2. **String Copy**:
-   - The helper function `ft_strncpy` is used to copy a substring of a given length into a new string.
-
-3. **Delimiters**:
-   - Words are separated by spaces, tabs, or newlines.
-
----
-
-## Example Usage
-
-### Input String:
-
-```bash
-"Hello   world\tthis\nis\t42"
-```
-
-### Output:
-
-```c
-char **result = ft_split("Hello   world\tthis\nis\t42");
-
-printf("%s\n", result[0]); // "Hello"
-printf("%s\n", result[1]); // "world"
-printf("%s\n", result[2]); // "this"
-printf("%s\n", result[3]); // "is"
-printf("%s\n", result[4]); // "42"
-```
-
-### Memory Layout:
-
-```
-result:
-+---------------------+
-| "Hello"             |
-+---------------------+
-| "world"             |
-+---------------------+
-| "this"              |
-+---------------------+
-| "is"                |
-+---------------------+
-| "42"                |
-+---------------------+
-| NULL                |
-+---------------------+
-```
-
----
-
-## Edge Cases
-
-1. **Input: Empty String**  
-   ```bash
-   $> ft_split("")
-   ```
-   - Output: `NULL`-terminated array with no words.
-
-2. **Input: Only Delimiters**  
-   ```bash
-   $> ft_split("   \t\n  ")
-   ```
-   - Output: `NULL`-terminated array with no words.
-
-3. **Input: Single Word**  
-   ```bash
-   $> ft_split("word")
-   ```
-   - Output: `["word", NULL]`.
-
-4. **Multiple Delimiters Between Words**  
-   - Handles multiple spaces, tabs, and newlines correctly.
-
----
-
-## Compilation and Execution
-
-To compile:
-
-```bash
-cc -Wall -Wextra -Werror ft_split.c
-```
-
-To test:
-
-```bash
-./ft_split
+```plaintext
+Word 1: Hello
+Word 2: world
+Word 3: 42
+Word 4: School
 ```

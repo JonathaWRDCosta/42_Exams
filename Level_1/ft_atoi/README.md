@@ -1,130 +1,109 @@
-### **Program Requirements**
-- Convert a string `str` to an integer and return it.
-- Mimic the behavior of the standard C library function `atoi()`.
-- Handle:
-  - Leading whitespace.
-  - An optional `+` or `-` sign.
-  - The numeric characters.
-  - Stop parsing when non-numeric characters are encountered.
-- No standard functions are allowed.
+# Exercise: ft_atoi
 
----
+## Description
 
-### **Code Walkthrough**
+Assignment name  : ft_atoi  
+Expected files   : ft_atoi.c  
+Allowed functions: None  
+
+--------------------------------------------------------------------------------
+
+Write a function that converts a string (`str`) to an integer (`int`) and returns it.
+
+The function should behave similarly to the standard `atoi` function, which is used to convert a string to an integer, as described in the man page for `atoi`.
+
+Your function must be declared as follows:
+
 ```c
-int	ft_atoi(const char *str)
-{
-    int	i;
-    int	sign;
-    int	result;
+int ft_atoi(const char *str);
+```
 
-    i = 0;
-    sign = 1;
-    result = 0;
+### Function Behavior
 
-    // Skip leading whitespace characters (spaces, tabs, and newlines)
-    while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-        i++;
+- The function should handle optional leading spaces or tab characters.
+- The function should handle an optional leading `+` or `-` sign.
+- The function should stop converting as soon as a non-numeric character is encountered (i.e., it should ignore characters after a number).
+- The function should return the integer equivalent of the string.
 
-    // Handle optional '+' or '-' sign
-    if (str[i] == '-')
-    {
-        sign = -1;  // Negative number
-        i++;
-    }
-    else if (str[i] == '+')
-        i++;
+### Examples:
 
-    // Convert consecutive numeric characters to integer
-    while (str[i] >= '0' && str[i] <= '9')
-    {
-        result = result * 10 + (str[i] - '0');
-        i++;
-    }
+```bash
+$> ./ft_atoi "12345"
+12345
 
-    // Return the computed integer, applying the sign
-    return (result * sign);
-}
+$> ./ft_atoi " -42"
+-42
+
+$> ./ft_atoi "  +42  "
+42
+
+$> ./ft_atoi "123abc"
+123
+
+$> ./ft_atoi "  -99999  "
+-99999
 ```
 
 ---
 
-### **Key Details**
+## Function Prototype
 
-1. **Leading Whitespace**:
-   ```c
-   while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-   ```
-   This checks for:
-   - `' '` (space)
-   - `'\t'` (horizontal tab)
-   - `'\n'` (newline)
-   - `'\v'` (vertical tab)
-   - `'\f'` (form feed)
-   - `'\r'` (carriage return)
+```c
+int ft_atoi(const char *str);
+```
+
+---
+
+## Program Behavior
+
+1. **Skipping Leading Whitespaces**:
+   - The function begins by skipping any leading spaces or control characters (such as tab or newline) using a `while` loop.
 
 2. **Handling Signs**:
-   - If `'-'` is encountered, the `sign` is set to `-1`.
-   - If `'+'` is encountered, the `sign` remains `1`.
-   - Increment the index `i` to skip the sign character.
+   - If the next character is a `-`, the function sets a `sign` variable to `-1`. If it is a `+`, the function continues without changing the sign. The sign is used to determine whether the result should be positive or negative.
 
-3. **Numeric Conversion**:
-   ```c
-   result = result * 10 + (str[i] - '0');
-   ```
-   This updates the `result` by multiplying the current value by 10 (shifting left in decimal space) and adding the numeric value of the current character.
+3. **Converting Digits**:
+   - The function then enters a `while` loop to process digits. For each digit, it multiplies the current result by 10 (shifting the result by one decimal place) and adds the integer value of the digit (by subtracting `'0'` from the character).
 
-4. **Stopping Conditions**:
-   - The loop stops when a non-numeric character is encountered.
-   - Non-numeric characters after the valid integer are ignored (standard `atoi` behavior).
-
-5. **Final Return**:
-   ```c
-   return (result * sign);
-   ```
-   Applies the computed `sign` to the numeric result.
+4. **Returning the Result**:
+   - Once the string has been fully processed, the function returns the result, adjusting for the sign (`sign * result`).
 
 ---
 
-### **Example Usage**
+## Pseudo Code
 
-```c
-#include <stdio.h>
+```
+START
+    Initialize i = 0, sign = 1, result = 0
+    
+    While the character at str[i] is a space or control character
+        Increment i
+    
+    If the character at str[i] is a '-' then
+        Set sign to -1 and increment i
+    Else if the character at str[i] is a '+' then
+        Increment i
 
-int	ft_atoi(const char *str);
+    While the character at str[i] is a digit
+        Multiply result by 10 and add the numeric value of str[i]
+        Increment i
 
-int	main(void)
-{
-    printf("%d\n", ft_atoi("   42"));       // Output: 42
-    printf("%d\n", ft_atoi("   -42"));      // Output: -42
-    printf("%d\n", ft_atoi("   +42"));      // Output: 42
-    printf("%d\n", ft_atoi("   42abc123")); // Output: 42
-    printf("%d\n", ft_atoi("abc42"));       // Output: 0
-    printf("%d\n", ft_atoi("   -2147483648")); // Output: -2147483648
-    printf("%d\n", ft_atoi("2147483647"));  // Output: 2147483647
-    return (0);
-}
+    Return result * sign
+END
 ```
 
 ---
 
-### **Strengths**
-- Handles all edge cases, including leading whitespace, signs, and non-numeric trailing characters.
-- Matches the behavior of the standard `atoi` function.
-- Does not use any disallowed functions.
-- Handles the `INT_MIN` (`-2147483648`) and `INT_MAX` (`2147483647`) boundary values correctly.
+## Code Explanation
 
----
+1. **Whitespace Handling**:
+   - The program skips over leading spaces or tab characters using a `while` loop to ensure the conversion begins from the first non-whitespace character.
 
-### **Possible Enhancements**
-While the implementation is solid, the following could be considered:
-1. **Overflow Handling**:
-   - The code does not currently check for overflow (when the number exceeds `INT_MAX` or `INT_MIN`).
-   - You can add logic to detect and handle overflow by checking the intermediate `result`.
+2. **Sign Handling**:
+   - The `sign` variable is used to track whether the final result should be positive or negative based on the presence of a `+` or `-` sign at the beginning of the string.
 
-2. **Simplification of the `sign` Logic**:
-   - Instead of explicitly incrementing `i` inside the `if` blocks, the condition can be combined to streamline the code:
-     ```c
-     if (str[i] == '-' || str[i] == '+')
-         sign = (str[i++] == '-') ? -1 : 1;
-     ```
+3. **Integer Conversion**:
+   - Each character representing a digit is converted to its integer value by subtracting the ASCII value of `'0'`. This value is then added to the result, with the previous result being multiplied by 10 to shift the digits left by one place.
+
+4. **Final Return**:
+   - Once the numeric conversion is complete, the function returns the result, applying the sign to determine whether the number should be negative or positive.

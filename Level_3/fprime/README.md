@@ -2,15 +2,43 @@
 
 ## Description
 
-Write a program that takes a positive integer as an argument and displays its prime factors in ascending order, separated by `*`. If the input number has no prime factors (e.g., it's `1`), the output should just be `1`.
+Assignment name  : fprime  
+Expected files   : fprime.c  
+Allowed functions: printf, atoi  
+--------------------------------------------------------------------------------
 
-If the number of arguments is not 1 or if the input is invalid, the program should print just a newline.
+Write a program that takes a positive int and displays its prime factors on the standard output, followed by a newline.
 
+Factors must be displayed in ascending order and separated by `*`, so that the expression in the output gives the right result.
+
+If the number of parameters is not 1, simply display a newline.
+
+The input, when there is one, will be valid.
+
+Examples:
+```console
+$> ./fprime 225225 | cat -e  
+3*3*5*5*7*11*13$  
+$> ./fprime 8333325 | cat -e  
+3*3*5*5*7*11*13*37$  
+$> ./fprime 9539 | cat -e  
+9539$  
+$> ./fprime 804577 | cat -e  
+804577$  
+$> ./fprime 42 | cat -e  
+2*3*7$  
+$> ./fprime 1 | cat -e  
+1$  
+$> ./fprime | cat -e  
+$  
+$> ./fprime 42 21 | cat -e  
+$
+```
 ### Expected Output Format
 
-- If the input is valid, print the prime factors separated by `*`.
-- If the input is `1`, print `1`.
-- If no input is provided, print just a newline.
+- If the input number is valid and greater than `1`, display its prime factors separated by `*`.
+- If the input number is `1`, display `1`.
+- If the number of arguments is not exactly one or the input is invalid, display a newline.
 
 ---
 
@@ -24,174 +52,80 @@ int main(int argc, char *argv[]);
 
 ## Program Behavior
 
-- If there is exactly one argument:
-  - If the number is `1`, print `1`.
-  - If the number is greater than `1`, output its prime factors in ascending order, separated by `*`.
-- If there are no arguments or more than one argument, print a newline.
-
----
-
-## Code Implementation
-
-Here’s the implementation of the `fprime.c` program:
-
-```c
-#include <stdio.h>
-#include <stdlib.h>
-
-int	main(int argc, char *argv[])
-{
-	int	i;
-	int	number;
-
-	if (argc == 2)
-	{
-		i = 1;
-		number = atoi(argv[1]);  // Convert input argument to integer
-
-		// Special case: if the number is 1
-		if (number == 1)
-			printf("1");
-
-		// Find prime factors
-		while (number >= ++i)
-		{
-			if (number % i == 0)  // If i divides the number, it's a factor
-			{
-				printf("%d", i);
-				if (number == i)  // If the number equals i, we are done
-					break;
-				printf("*");  // Print '*' between factors
-				number /= i;  // Divide number by the factor
-				i = 1;  // Reset i to 1 to start checking from the smallest prime
-			}
-		}
-	}
-	// Always print a newline at the end
-	printf("\n");
-	return (0);
-}
-```
-
----
-
-## Explanation of the Code
-
-### `main` Function
-
 1. **Argument Check**:
-   - The program checks if exactly one argument is provided (`argc == 2`). If there are no arguments or more than one, it simply prints a newline.
+   - The program first checks if exactly one argument is provided. If there are no arguments or more than one, it outputs a newline and terminates.
 
 2. **Handling Special Case (`1`)**:
-   - If the input is `1`, the program prints `1` immediately, as it has no prime factors.
+   - If the input number is `1`, the program immediately outputs `1` as `1` has no prime factors.
 
-3. **Finding Prime Factors**:
-   - The program starts checking for prime factors beginning from `i = 2` (the smallest prime number).
-   - For each value of `i`, it checks if `i` divides the number (`number % i == 0`). If so, `i` is a prime factor, and it's printed.
-   - After printing each factor, the program divides the number by `i` (`number /= i`) and resets `i` to `1` to check for further factors.
-   - This process continues until the number is reduced to `1`, at which point the loop ends.
+3. **Prime Factorization**:
+   - Starting with the smallest prime factor `2`, the program divides the input number by each potential divisor, checking for divisibility.
+   - If a divisor divides the number, it is a prime factor, and the program prints it. After printing each factor, the number is divided by the factor, and the process continues with the next possible divisor.
+   - The program ensures that all prime factors are printed in ascending order. If the number is prime itself, it is printed without a `*` following it.
 
-4. **Printing the Result**:
-   - The prime factors are printed separated by `*`. If there is only one prime factor (the number itself is prime), it will not print a `*` after it.
+4. **Output Formatting**:
+   - Prime factors are displayed in ascending order, separated by `*`.
+   - After the last prime factor, no additional `*` is printed, ensuring correct output formatting.
 
-5. **Output**:
-   - After all factors are printed, a newline (`\n`) is printed at the end.
+5. **End Output**:
+   - After displaying all prime factors or handling the special case for `1`, the program prints a newline (`\n`) to conclude the output.
 
 ---
 
-## Example Usage
+## Pseudo Code
 
-### Example 1: Prime Factorization of `225225`
-
-**Input:**
-```bash
-./fprime 225225
 ```
+START
+    IF the number of arguments (argc) is NOT 2 THEN
+        PRINT a newline
+        EXIT the program
+    END IF
 
-**Output:**
-```
-3*3*5*5*7*11*13
-```
+    CONVERT the argument (argv[1]) to an integer (number)
 
-### Example 2: Prime Factorization of `8333325`
+    IF the number is 1 THEN
+        PRINT "1"
+        EXIT the program
+    END IF
 
-**Input:**
-```bash
-./fprime 8333325
-```
+    INITIALIZE i to 1 (starting value before the first increment)
 
-**Output:**
-```
-3*3*5*5*7*11*13*37
-```
+    WHILE the number is greater than or equal to (i + 1) DO
+        INCREMENT i by 1
+        
+        IF the number is divisible by i (number % i == 0) THEN
+            PRINT i
+            IF the number equals i (number == i) THEN
+                EXIT the program
+            END IF
+            PRINT "*"
+            DIVIDE the number by i (number /= i)
+            RESET i to 1 (start checking from the smallest prime)
+        END IF
+    END WHILE
 
-### Example 3: Prime Factorization of `9539`
+    PRINT a newline to end the output
+END
 
-**Input:**
-```bash
-./fprime 9539
-```
-
-**Output:**
-```
-9539
-```
-
-### Example 4: Prime Factorization of `42`
-
-**Input:**
-```bash
-./fprime 42
-```
-
-**Output:**
-```
-2*3*7
-```
-
-### Example 5: Input `1`
-
-**Input:**
-```bash
-./fprime 1
-```
-
-**Output:**
-```
-1
-```
-
-### Example 6: No Arguments Provided
-
-**Input:**
-```bash
-./fprime
-```
-
-**Output:**
-```
-<newline>
 ```
 
 ---
 
-## Compilation and Execution
+## Code Explanation
 
-To compile the program:
+1. **Argument Handling**:
+   - The program verifies that exactly one argument is provided. If the number of arguments is incorrect, it prints a newline.
 
-```bash
-cc -Wall -Wextra -Werror fprime.c -o fprime
-```
+2. **Special Case for `1`**:
+   - If the input is `1`, the program immediately prints `1` because `1` has no prime factors.
 
-To test the program:
+3. **Prime Factor Calculation**:
+   - The program begins checking from `i = 2` (the smallest prime) to find factors.
+   - If `i` divides the number without a remainder, it is considered a prime factor, and the number is divided by `i`. The process repeats until all factors are found.
+   
+4. **Formatted Output**:
+   - The prime factors are printed in ascending order, separated by `*`, with no trailing `*` after the last factor.
+   - If no prime factors exist (for input `1`), the program prints `1`.
 
-```bash
-./fprime 225225
-./fprime 42
-```
-
----
-
-## Summary
-
-The `fprime` program takes a positive integer and displays its prime factors in ascending order, separated by `*`. It handles edge cases like `1` (which has no prime factors) and ensures the correct output format with proper handling of input and output.
+5. **Final Newline**:
+   - At the end of the program, a newline character is printed to ensure proper formatting of the output.

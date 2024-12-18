@@ -1,28 +1,153 @@
-# Exercise: tab_mult
+# **Assignment Name**: tab_mult
 
-## Description
+**Expected Files**: `tab_mult.c`  
+**Allowed Functions**: `write`
 
-The task is to write a program that displays the multiplication table of a given number from 1 to 9. The number is passed as a command-line argument. If no argument is provided, the program should print only a newline.
+---
 
-### Requirements:
-- The input number is guaranteed to be a strictly positive integer that fits in an `int`. 
-- Additionally, the result of multiplying the number by 9 must also fit in an `int`.
+## **Description**
 
-### Output:
-The output should display the multiplication table in the format:  
-`1 x N = Result`  
-`2 x N = Result`  
-...  
-`9 x N = Result`
+Write a program that displays the multiplication table of a given number.
 
-If no argument is provided, the program outputs a single newline.
+- The parameter passed will always be a strictly positive integer that fits within the range of an `int`. Additionally, the result of the multiplication (`number * 9`) will also fit within the range of an `int`.
+- If no parameters are provided, the program should output only a newline.
 
-### Examples:
+---
 
-#### Example 1:
-Input: `./tab_mult 9`  
-Output:
+## **Input**
+
+- The program accepts a single integer argument passed via the command line.
+- If no argument is passed, the program will output a newline.
+
+---
+
+## **Output Format**
+
+- For a given input number `n`, the program should display the multiplication table for `n` from `1` to `9`. Each line should be formatted as follows:
+  - `i x n = result`
+  - Where `i` ranges from 1 to 9, `n` is the input number, and `result` is the product of `i` and `n`.
+- The output should be printed one line for each multiplication.
+- If no input is provided, a newline is printed.
+
+---
+
+## **Function Prototype**
+
+```c
+int main(int argc, char **argv);
+int ft_atoi(char *str);
+void ft_putchar(char c);
+void ft_putnbr(int nb);
 ```
+
+---
+
+## **Program Behavior**
+
+1. **Argument Handling**:
+   - If no arguments are passed (`argc != 2`), the program outputs just a newline.
+   - If an argument is passed, the program processes the given number and prints its multiplication table.
+
+2. **Multiplication Logic**:
+   - The program multiplies the number by each of the integers from 1 to 9 and prints the result in the format: `i x n = result`.
+
+3. **Output**:
+   - After processing the multiplication table, the program prints each line with the format `i x n = result`.
+   - If no arguments are provided, the program just outputs a newline.
+
+---
+
+## **Pseudo Code**
+
+```plaintext
+START
+
+    # Step 1: Check if the number of arguments is valid
+    IF argc != 2:
+        PRINT a newline
+        EXIT the program
+
+    # Step 2: Convert the argument (string) to an integer
+    CALL ft_atoi with argv[1] as the parameter
+    STORE the result in variable nbr
+
+    # Step 3: Loop through the range of 1 to 9
+    FOR i from 1 to 9:
+        PRINT i
+        PRINT " x "
+        PRINT nbr
+        PRINT " = "
+        PRINT (i * nbr)
+        PRINT a newline
+
+END
+
+
+# Function: ft_atoi (Converts a string to an integer)
+START ft_atoi(str):
+    INITIALIZE sign = 1
+    INITIALIZE result = 0
+
+    # Step 1: Skip leading spaces and tabs
+    WHILE str points to a space or tab:
+        INCREMENT str
+
+    # Step 2: Handle the '+' sign (if present)
+    IF str points to a '+' sign:
+        INCREMENT str
+
+    # Step 3: Convert digits to number
+    WHILE str points to a digit:
+        result = result * 10 + (digit value of str)
+        INCREMENT str
+
+    # Step 4: Return the result
+    RETURN result * sign
+
+END ft_atoi
+
+
+# Function: ft_putchar (Prints a character to the screen)
+START ft_putchar(c):
+    WRITE c to standard output
+
+END ft_putchar
+
+
+# Function: ft_putnbr (Prints an integer to the screen)
+START ft_putnbr(nb):
+    IF nb is greater than or equal to 10:
+        CALL ft_putnbr with nb / 10
+    PRINT the last digit (nb % 10) to the screen
+
+END ft_putnbr
+```
+
+---
+
+## **Code Explanation**
+
+1. **Argument Handling**:
+   - The `main` function first checks if exactly one argument is passed (other than the program name). If not, it prints a newline and exits.
+   - If an argument is provided, it uses `ft_atoi` to convert the argument (a string) into an integer.
+
+2. **Multiplication Logic**:
+   - A loop runs from 1 to 9, multiplying the input number (`nbr`) by each of these integers.
+   - For each iteration, it prints the result in the format: `i x nbr = i * nbr`, where `i` is the loop counter and `nbr` is the user input.
+
+3. **Helper Functions**:
+   - `ft_atoi`: This function converts a string to an integer, handling optional leading whitespace and the positive sign.
+   - `ft_putchar`: A simple function to write a single character to standard output.
+   - `ft_putnbr`: This function prints an integer. It recursively prints each digit, starting from the leftmost digit.
+
+---
+
+## **Examples**
+
+### Example 1:
+
+```bash
+$> ./tab_mult 9
 1 x 9 = 9
 2 x 9 = 18
 3 x 9 = 27
@@ -34,10 +159,12 @@ Output:
 9 x 9 = 81
 ```
 
-#### Example 2:
-Input: `./tab_mult 19`  
-Output:
-```
+- The program prints the multiplication table for `9` from `1 x 9 = 9` to `9 x 9 = 81`.
+
+### Example 2:
+
+```bash
+$> ./tab_mult 19
 1 x 19 = 19
 2 x 19 = 38
 3 x 19 = 57
@@ -49,128 +176,13 @@ Output:
 9 x 19 = 171
 ```
 
-#### Example 3:
-Input: `./tab_mult`  
-Output:
-```
-(empty line)
-```
+- The program prints the multiplication table for `19` from `1 x 19 = 19` to `9 x 19 = 171`.
 
----
+### Example 3:
 
-## Solution
-
-### Step 1: Handle Input
-
-- The program checks if exactly one argument is passed. If the number of arguments is not 2 (program name + one argument), it prints a newline and exits.
-
-- If a valid argument is provided, the string argument is converted to an integer using a custom `ft_atoi` function.
-
-### Step 2: Generate and Print the Multiplication Table
-
-- The program loops from `1` to `9` and calculates the product of the current loop variable (`i`) with the given number (`nbr`).
-- For each iteration, the program prints the multiplication statement in the required format (`i x N = Result`), using the custom `ft_putnbr` function for number printing.
-
----
-
-## Code Explanation:
-
-Here is the complete code:
-
-```c
-#include <unistd.h>
-
-int ft_atoi(char *str)
-{
-	int sign;
-	int result;
-
-	sign = 1;
-	result = 0;
-	while (*str == ' ' || (*str >= 9 && *str <= 13))  // Skip whitespace
-		str++;
-	if (*str == '+')  // Skip '+' if present
-		str++;
-	while (*str >= '0' && *str <= '9')  // Build integer from digits
-	{
-		result = result * 10 + *str - '0';
-		str++;
-	}
-	return (sign * result);  // Return the converted integer
-}
-
-void ft_putchar(char c)
-{
-	write(1, &c, 1);  // Print a single character
-}
-
-void ft_putnbr(int nb)
-{
-	if (nb / 10 > 0)  // Recursively print all digits except the last
-		ft_putnbr(nb / 10);
-	ft_putchar(nb % 10 + '0');  // Print the last digit
-}
-
-int main(int argc, char *argv[])
-{
-	int i;
-	int nbr;
-
-	if (argc != 2)  // Check if the correct number of arguments is passed
-		return (write(1, "\n", 1));  // Print a newline if no number is provided
-	else
-	{
-		i = 1;
-		nbr = ft_atoi(argv[1]);  // Convert the input string to an integer
-		while (i <= 9)  // Generate multiplication table from 1 to 9
-		{
-			ft_putnbr(i);  // Print the multiplier (1 to 9)
-			write(1, " x ", 3);  // Print ' x '
-			ft_putnbr(nbr);  // Print the input number
-			write(1, " = ", 3);  // Print ' = '
-			ft_putnbr(i * nbr);  // Print the result of the multiplication
-			write(1, "\n", 1);  // Print a newline
-			i += 1;  // Increment the multiplier
-		}
-	}
-	return (0);  // Exit the program
-}
+```bash
+$> ./tab_mult | cat -e
+$
 ```
 
----
-
-## Functions Used:
-
-### 1. `ft_atoi`:
-This function converts a string to an integer. It:
-- Skips whitespace characters.
-- Reads numeric digits and calculates their integer value.
-- Returns the integer equivalent of the input string.
-
-### 2. `ft_putchar`:
-This helper function writes a single character to the standard output using the `write` system call.
-
-### 3. `ft_putnbr`:
-This function prints an integer to the standard output. It:
-- Uses recursion to print all digits of the number except the last one.
-- Prints the last digit using `ft_putchar`.
-
-### 4. `main`:
-The main function:
-- Validates input arguments.
-- Converts the input string to an integer using `ft_atoi`.
-- Loops from 1 to 9 to print the multiplication table using `ft_putnbr` and formatting strings with `write`.
-
----
-
-## Concepts Covered:
-
-- **String to Integer Conversion**: The program uses a custom `ft_atoi` function to convert the string input to an integer.
-  
-- **Recursion**: The `ft_putnbr` function uses recursion to print all digits of a number.
-
-- **Flow Control**: The program handles input validation by checking the number of arguments and ensuring correct execution only for valid inputs.
-
-- **ASCII Manipulation**: The `ft_putnbr` function uses ASCII math to convert integer digits to their corresponding character values.
-
-- **Output Formatting**: The program carefully formats the output using `write` to print the multiplication table in the required format.
+- No arguments are provided, so the program outputs just a newline.

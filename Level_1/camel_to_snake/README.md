@@ -2,120 +2,95 @@
 
 ## Description
 
-The task is to write a program that converts a string in lowerCamelCase format into snake_case format. The string is in lowerCamelCase if:
+Assignment name  : camel_to_snake  
+Expected files   : camel_to_snake.c  
+Allowed functions: malloc, free, realloc, write  
 
-- The first word starts with a lowercase letter.
-- Every subsequent word starts with an uppercase letter, with all the other letters lowercase.
+--------------------------------------------------------------------------------
 
-The string should be converted into snake_case, where:
+Write a program that takes a single string in `lowerCamelCase` format and converts it into a string in `snake_case` format.
 
-- All letters are in lowercase.
-- Each word is separated by an underscore (`_`).
-
-## Requirements
-
-- **File**: `camel_to_snake.c`
-- **Allowed functions**: `malloc`, `free`, `realloc`, `write`
-
-### Expected behavior:
-
-- If the string is in lowerCamelCase, it should be printed in snake_case.
-- If the program is called without any argument, it should print just a newline.
+- A `lowerCamelCase` string is a string where each word begins with a capital letter except for the first one.
+- A `snake_case` string is a string where each word is in lower case, separated by an underscore ("_").
 
 ### Examples:
 
-- Input: `./camel_to_snake "hereIsACamelCaseWord"`
-  
-  Output:
-  ```
-  here_is_a_camel_case_word
-  ```
+```bash
+$> ./camel_to_snake "hereIsACamelCaseWord"
+here_is_a_camel_case_word
 
-- Input: `./camel_to_snake "helloWorld"`
-  
-  Output:
-  ```
-  hello_world
-  ```
+$> ./camel_to_snake "helloWorld" | cat -e
+hello_world$
 
-- Input: `./camel_to_snake`
-  
-  Output:
-  ```
-  (only a newline)
-  ```
-
-## Solution
-
-### 1. Understanding the Conversion Process
-
-To convert a string from lowerCamelCase to snake_case:
-
-- **Lowercase conversion**: If the character is uppercase (ASCII between `65` and `90`), it should be converted to lowercase by adding `32` to its ASCII value.
-  
-- **Underscore addition**: After converting an uppercase letter to lowercase, an underscore `_` is inserted before printing the lowercase letter to separate the words in the snake_case format.
-
-### 2. Logic Implementation
-
-The program follows these steps:
-
-1. **Check for valid argument count**: It first ensures that there is exactly one argument passed (other than the program name). If not, it prints a newline and terminates.
-  
-2. **Iterate through the string**: The string is iterated character by character:
-   - If the character is uppercase, it is converted to lowercase, and an underscore `_` is printed before the character.
-   - Otherwise, the character is printed directly.
-  
-3. **Newline after conversion**: Once the string is processed, a newline is printed to ensure the output format is correct.
-
-### Code:
-
-```c
-#include <unistd.h>
-
-void ft_camel_to_snake(char *str)
-{
-    while (*str)
-    {
-        if (*str >= 65 && *str <= 90)  // Check if the character is uppercase
-        {
-            *str = *str + 32;  // Convert uppercase to lowercase
-            write(1, "_", 1);  // Print underscore
-        }
-        write(1, str, 1);  // Print the character (lowercase or original)
-        str++;  // Move to the next character
-    }
-    write(1, "\n", 1);  // Print a newline at the end
-}
-
-int main(int argc, char *argv[])
-{
-    if (argc != 2)  // Check if there is exactly one argument
-        return (write(1, "\n", 1));  // Print newline if argument count is not 2
-    ft_camel_to_snake(argv[1]);  // Convert and print the string in snake_case
-    return (0);  // Exit successfully
-}
+$> ./camel_to_snake | cat -e
+$
 ```
 
-## Explanation of the Code:
+### Expected Output Format
 
-### 1. `ft_camel_to_snake` function
+- The program takes a `lowerCamelCase` string as input.
+- It converts the string to `snake_case` format.
+- It outputs the result followed by a newline (`\n`).
+- If the number of arguments is not 1, it outputs just a newline.
 
-This function is responsible for converting the string from lowerCamelCase to snake_case:
-- It loops through each character in the string.
-- If the character is uppercase, it is converted to lowercase and an underscore (`_`) is printed before it.
-- Each character, whether modified or not, is printed as it is processed.
-- After the entire string is processed, a newline is printed.
+---
 
-### 2. `main` function
+## Function Prototype
 
-The `main` function checks if the program has been called with exactly one argument. If not, it prints only a newline. If the argument count is correct, it calls the `ft_camel_to_snake` function to perform the conversion and print the result.
+```c
+void ft_camel_to_snake(char *str);
+```
 
-## Concepts Covered:
+---
 
-- **String manipulation**: The program demonstrates how to loop through a string, check each character, and modify it if necessary.
-  
-- **Character ASCII values**: The program uses ASCII value ranges (`65` to `90` for uppercase letters) to identify and convert uppercase letters to lowercase.
-  
-- **Using `write`**: The `write` function is used for output, as it provides more control over the printing process than `printf`. It’s also one of the allowed functions for this exercise.
+## Program Behavior
 
-- **Flow control**: The program handles input validation by checking the number of arguments passed and reacts accordingly.
+1. **Argument Handling**:
+   - The program first checks if exactly one argument is provided. If the number of arguments is not 2 (the program name and the string), it prints a newline and exits.
+
+2. **Conversion**:
+   - The program processes each character in the string:
+     - If a character is an uppercase letter (from 'A' to 'Z'), it converts it to its lowercase equivalent and outputs an underscore ("_").
+     - The program then prints the character, whether it is a converted letter or a lowercase letter.
+
+3. **Output**:
+   - The program prints the modified string followed by a newline using the `write` function.
+
+---
+
+## Pseudo Code
+
+```
+START
+    IF the number of arguments (argc) is NOT 2 THEN
+        PRINT a newline
+        EXIT the program
+    END IF
+
+    FOR each character in the string (argv[1]) DO
+        IF the character is an uppercase letter THEN
+            CONVERT the character to lowercase
+            PRINT an underscore
+        END IF
+
+        PRINT the character (converted or original)
+    END FOR
+
+    PRINT a newline
+END
+```
+
+---
+
+## Code Explanation
+
+1. **Argument Check**:
+   - The program first checks if exactly one argument is passed. If not, it prints a newline and exits.
+
+2. **Camel to Snake Conversion**:
+   - The program iterates through each character in the string:
+     - If the character is uppercase (between 'A' and 'Z'), it is converted to lowercase by adding 32 to the character value (ASCII conversion). The program also prints an underscore before the lowercase character.
+     - If the character is already lowercase, it is printed as it is.
+
+3. **Output**:
+   - The `write` function is used to print both the converted characters and underscores, followed by a newline at the end.

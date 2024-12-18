@@ -1,182 +1,154 @@
-# Exercise: str_capitalizer
+# **Assignment Name**: str_capitalizer
 
-## Description
-
-The goal of this exercise is to write a program that capitalizes the first character of each word in a given string or series of strings. Each word should be delimited by spaces, tabs, or the start/end of the string. The first letter of each word must be capitalized, and the rest of the characters should be lowercase.
-
-The program should output the modified string(s) followed by a newline (`\n`).
-
-### Rules:
-1. A word is a part of the string delimited by spaces, tabs, or the start/end of the string.
-2. If the word consists of a single letter, it should be capitalized.
-3. If there are no arguments, the program must simply output a newline (`\n`).
+**Expected Files**: `str_capitalizer.c`  
+**Allowed Functions**: `write`
 
 ---
 
-## Function Prototype
+## **Description**
+
+Write a program that takes one or more strings as arguments and capitalizes the first character of each word (if it's a letter), converts the rest of the characters in each word to lowercase, and displays the result on the standard output followed by a newline.
+
+A word is defined as any sequence of characters delimited by spaces, tabs, or the start/end of the string. If a word contains only one letter, it must be capitalized.
+
+If no arguments are provided, the program should display just a newline.
+
+---
+
+## **Input**
+
+- The program accepts one or more strings as command-line arguments.  
+- If no arguments are provided, the program outputs a newline.
+
+---
+
+## **Output Format**
+
+- The program modifies each string by capitalizing the first character of each word and converting all other characters in the word to lowercase.  
+- Each modified string is printed followed by a newline.
+
+---
+
+## **Function Prototype**
 
 ```c
+int main(int argc, char **argv);
 void ft_strcap(char *str);
 ```
 
 ---
 
-## Program Behavior
+## **Program Behavior**
 
-- If no arguments are provided, print only a newline.
-- For each word, capitalize the first letter and make the rest of the letters lowercase.
+1. **Argument Handling**:
+   - If no arguments are passed (`argc < 2`), the program prints a newline and exits.
+   - If arguments are provided, the program processes each string and applies the capitalization logic.
+
+2. **String Processing**:
+   - For each string:
+     - The program ensures the first letter of each word is capitalized.
+     - It converts all other letters in the word to lowercase.
+     - Words are defined by spaces, tabs, or string boundaries.
+
+3. **Word Definition**:
+   - A "word" is any sequence of characters that are not spaces or tabs, bounded by spaces/tabs or the start/end of the string.
+   - The first character of each word is capitalized, and the rest of the word is converted to lowercase.
+
+4. **Output**:
+   - After processing each string, the program prints the modified string followed by a newline.
 
 ---
 
-## Code Implementation
+## **Pseudo Code**
 
-Here is the implementation of the `str_capitalizer.c` program:
+```plaintext
+START
 
-```c
-#include <unistd.h>
+    # Step 1: Check if there are arguments
+    IF argc < 2:
+        PRINT a newline
+        EXIT the program
 
-void ft_strcap(char *str)
-{
-    int i;
+    # Step 2: Process each argument string
+    FOR each argument i from 1 to argc-1:
+        CALL ft_strcap with argv[i] as the parameter
+        PRINT a newline
 
-    i = 0;
-    if (str[i] >= 'a' && str[i] <= 'z')
-        str[i] -= 32; // Capitalize the first letter if it's lowercase
-    write(1, &str[i], 1);
+END
 
-    while (str[++i])
-    {
-        // Convert uppercase letters to lowercase
-        if (str[i] >= 'A' && str[i] <= 'Z')
-            str[i] += 32;
 
-        // Capitalize the first letter after a space or tab
-        if ((str[i] >= 'a' && str[i] <= 'z') && (str[i - 1] == ' ' || str[i - 1] == '\t'))
-            str[i] -= 32;
+# Function: ft_strcap (Capitalizes the first letter of each word)
+START ft_strcap(str):
+    DEFINE an index i = 0
 
-        write(1, &str[i], 1);
-    }
-}
+    # Step 1: Capitalize the first character if it is a lowercase letter
+    IF str[i] is a lowercase letter:
+        Convert str[i] to uppercase by subtracting 32 (ASCII difference)
+    WRITE str[i] to stdout
 
-int main(int argc, char *argv[])
-{
-    int i;
+    # Step 2: Loop through each character of the string starting from the second character
+    WHILE str[i] is not the null character:
+        # Step 3: Convert uppercase letters to lowercase
+        IF str[i] is an uppercase letter:
+            Convert str[i] to lowercase by adding 32 (ASCII difference)
+        
+        # Step 4: Capitalize the first letter of each word
+        IF str[i] is a letter AND previous character is a space or tab:
+            Convert str[i] to uppercase by subtracting 32 (ASCII difference)
+        
+        # Step 5: Print the current character
+        WRITE str[i] to stdout
+        INCREMENT i to check the next character
 
-    if (argc < 2)
-        return (write(1, "\n", 1)); // If no arguments are provided, print a newline
-    else
-    {
-        i = 1;
-        while (i < argc)
-        {
-            ft_strcap(argv[i]);  // Capitalize and print each argument
-            write(1, "\n", 1);    // Print a newline after each argument
-            i += 1;
-        }
-    }
-    return (0);
-}
+END ft_strcap
 ```
 
 ---
 
-## Explanation of the Code
+## **Code Explanation**
 
-### `ft_strcap` Function
+1. **Argument Handling**:
+   - The `main` function first checks if any arguments are passed. If no arguments are provided (`argc < 2`), the program prints a newline and exits.
+   - If arguments are provided, it processes each string in the `argv` array.
 
-1. **Initial Capitalization**:
-   - The first character of the string is checked. If it's a lowercase letter (`'a'` to `'z'`), it is capitalized by subtracting 32 from its ASCII value (this converts it to the uppercase letter).
-   
-2. **Loop Through the String**:
-   - The program then iterates through the rest of the string.
-   - If the current character is an uppercase letter, it is converted to lowercase by adding 32 to its ASCII value.
-   - If a letter follows a space (`' '`) or a tab (`'\t'`), it is capitalized by subtracting 32 from its ASCII value.
+2. **Capitalization Logic**:
+   - The `ft_strcap` function processes each string by first capitalizing the first letter if it's a lowercase letter.
+   - Then it continues checking and modifying the rest of the characters in the string:
+     - Converts uppercase letters to lowercase.
+     - Identifies the first letter of each word and capitalizes it.
 
 3. **Output**:
-   - Each character (modified or not) is printed using the `write` function.
-
-### `main` Function
-
-1. **Argument Check**:
-   - If no arguments are passed, the program outputs a newline (`\n`).
-   
-2. **Iterate Through Arguments**:
-   - If there are arguments, the program loops through each one and applies the `ft_strcap` function to capitalize the words. After each argument, a newline is printed.
+   - After processing each string, the program prints the modified string followed by a newline.
 
 ---
 
-## Example Usage
+## **Examples**
 
-### Example 1: No Arguments
-
-**Input:**
-```bash
-./str_capitalizer
-```
-
-**Output:**
-```
-<newline>
-```
-
-### Example 2: Single String with Mixed Case
-
-**Input:**
-```bash
-./str_capitalizer "a FiRSt LiTTlE TESt"
-```
-
-**Output:**
-```
-A First Little Test
-```
-
-### Example 3: Multiple Strings
-
-**Input:**
-```bash
-./str_capitalizer "__SecONd teST A LITtle BiT   Moar comPLEX" "   But... This iS not THAT COMPLEX" "     Okay, this is the last 1239809147801 but not    the least    t"
-```
-
-**Output:**
-```
-__second Test A Little Bit   Moar Complex
-   But... This Is Not That Complex
-     Okay, This Is The Last 1239809147801 But Not    The Least    T
-```
-
----
-
-## Breakdown of Steps
-
-1. **Check and Handle No Arguments**:
-   - If no arguments are passed (`argc < 2`), print just a newline.
-
-2. **Process Each Argument**:
-   - For each argument string, process it with `ft_strcap` to capitalize the first letter of each word and convert the rest of the letters to lowercase.
-
-3. **Output**:
-   - Print each processed argument followed by a newline.
-
----
-
-## Compilation and Execution
-
-To compile the program:
+### Example 1:
 
 ```bash
-cc -Wall -Wextra -Werror str_capitalizer.c -o str_capitalizer
+$> ./str_capitalizer | cat -e
+$
 ```
 
-To test the program:
+- No arguments are passed, so the program outputs a newline.
+
+### Example 2:
 
 ```bash
-./str_capitalizer "a FiRSt LiTTlE TESt"
-./str_capitalizer "__SecONd teST A LITtle BiT   Moar comPLEX"
+$> ./str_capitalizer "a FiRSt LiTTlE TESt" | cat -e
+A First Little Test$
 ```
 
----
+- The program capitalizes the first character of each word and converts the rest to lowercase.
 
-## Summary
+### Example 3:
 
-The `str_capitalizer` program processes one or more input strings, capitalizes the first letter of each word, and converts the rest of the letters to lowercase. The program ensures proper handling of word boundaries defined by spaces and tabs, and outputs the formatted string(s) followed by a newline.
+```bash
+$> ./str_capitalizer "__SecONd teST A LITtle BiT   Moar comPLEX" "   But... This iS not THAT COMPLEX" "     Okay, this is the last 1239809147801 but not    the least    t" | cat -e
+__second Test A Little Bit   Moar Complex$
+   But... This Is Not That Complex$
+     Okay, This Is The Last 1239809147801 But Not    The Least    T$
+```
+
+- The program processes multiple strings and formats each one as specified.
